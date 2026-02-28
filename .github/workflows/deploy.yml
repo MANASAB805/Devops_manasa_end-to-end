@@ -26,12 +26,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v4
+      - name: Build and Push Multi-Arch Docker image
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/devops-mansa-app:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
 
       - name: Update Kubernetes manifest
         run: |
