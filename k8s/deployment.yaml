@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: devops-app
-        image: <your-docker-username>/devops-app:latest
+        image: manasabreddy/devops-mansa-app:49d7a4757681282f43b0e033a895616b250fac36
         ports:
         - containerPort: 1000
