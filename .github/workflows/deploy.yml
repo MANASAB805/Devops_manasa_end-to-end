@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Required for the "git push" step to work
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -22,16 +26,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-mansa-app:${{ github.sha }} .
-
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/devops-mansa-app:${{ github.sha }}
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/devops-mansa-app:${{ github.sha }}
 
       - name: Update Kubernetes manifest
         run: |
+          # The 's|image:.*|...' syntax is great for handling slashes in image names
           sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/devops-mansa-app:${{ github.sha }}|" k8s/deployment.yaml
 
       - name: Commit and push manifest update
@@ -39,8 +43,9 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add k8s/deployment.yaml
-          git commit -m "Update image tag to ${{ github.sha }}"
+          # Added [skip ci] to avoid infinite loops
+          git commit -m "Update image tag to ${{ github.sha }} [skip ci]"
           git push origin main
 
-      - name: ArgoCD Sync (Manual Step)
-        run: echo "After pushing, ArgoCD will detect and deploy changes"
+      - name: ArgoCD Sync Info
+        run: echo "ArgoCD will now detect the change in k8s/deployment.yaml and sync automatically."
