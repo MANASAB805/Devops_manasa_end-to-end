@@ -23,9 +23,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest
+          # pip install pytest
           # If you have a requirements.txt file with other dependencies, you can add:
-          # pip install -r requirements.txt
+          pip install -r requirements.txt
 
       - name: Run tests
         run: |
