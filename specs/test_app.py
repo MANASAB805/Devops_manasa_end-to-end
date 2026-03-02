@@ -14,4 +14,4 @@ def test_home_page(client):
 def test_submit_form(client):
     response = client.post('/submit', data={'name': 'Alice'})
     assert response.status_code == 200
-    assert b'Thank you, Alice!' in response.
+    assert b'Thank you, Alice!' in response.data
