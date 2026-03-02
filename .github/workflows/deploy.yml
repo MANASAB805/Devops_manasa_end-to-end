@@ -29,6 +29,7 @@ jobs:
 
       - name: Run tests
         run: |
+          export PYTHONPATH=.
           pytest specs/test_app.py
 
       - name: Set up Docker Buildx
