@@ -38,7 +38,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: "Promote image to ${{ github.event.inputs.environment }}"
           branch: promote-${{ github.event.inputs.environment }}-${{ github.run_number }}
           base: main
