@@ -36,10 +36,19 @@ jobs:
         run: |
           sed -i "s|image:.*|image: $IMAGE|" k8s/${{ github.event.inputs.environment }}/deployment.yaml
 
-      - name: Commit and Push Promotion
+      - name: Commit Changes
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          git checkout -b promote-${{ github.event.inputs.environment }}
           git add k8s/${{ github.event.inputs.environment }}/deployment.yaml
-          git commit -m "Promoted image to ${{ github.event.inputs.environment }}"
-          git push origin main
+          git commit -m "Promote image to ${{ github.event.inputs.environment }}"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: promote-${{ github.event.inputs.environment }}
+          base: main
+          title: "Promote to ${{ github.event.inputs.environment }}"
+          body: "Auto promotion from Dev to ${{ github.event.inputs.environment }}"
