@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: devops-app
-        image: manasabreddy/devops-mansa-app:56be77d4cc14020077e21b785bf7558df3561b5b
+        image: manasabreddy/devops-mansa-app:47d5e29fca3e87b89bc8275e9b1027a089132da0
         ports:
         - containerPort: 5000
