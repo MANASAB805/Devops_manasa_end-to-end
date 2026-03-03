@@ -11,10 +11,15 @@ on:
           - staging
           - production
 
+permissions:
+  contents: write
+
 jobs:
   promote:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
+    with:
+    token: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout Repo
