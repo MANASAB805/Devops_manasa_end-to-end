@@ -1,0 +1,38 @@
+name: Promote Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to promote to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Get Latest Image Tag from DEV
+        id: gettag
+        run: |
+          IMAGE=$(grep "image:" k8s/dev/deployment.yaml | awk '{print $2}')
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      - name: Update Target Environment
+        run: |
+          sed -i "s|image:.*|image: $IMAGE|" k8s/${{ github.event.inputs.environment }}/deployment.yaml
+
+      - name: Commit and Push Promotion
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add k8s/${{ github.event.inputs.environment }}/deployment.yaml
+          git commit -m "Promoted image to ${{ github.event.inputs.environment }}"
+          git push origin main
