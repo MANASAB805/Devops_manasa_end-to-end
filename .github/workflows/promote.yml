@@ -40,9 +40,12 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git checkout -b promote-${{ github.event.inputs.environment }}
+
+          git fetch origin main
+          git checkout -b promote-${{ github.event.inputs.environment }} origin/main
+
           git add k8s/${{ github.event.inputs.environment }}/deployment.yaml
-          git commit -m "Promote image to ${{ github.event.inputs.environment }}"
+          git commit -m "Promote image to ${{ github.event.inputs.environment }}" || echo "No changes to commit"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
