@@ -32,7 +32,6 @@ jobs:
       - name: Update Target Environment
         run: |
           sed -i "s|image:.*|image: $IMAGE|" k8s/${{ github.event.inputs.environment }}/deployment.yaml
-          echo "Updated ${{ github.event.inputs.environment }} deployment file"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
